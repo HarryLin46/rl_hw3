@@ -435,9 +435,67 @@ class GridWorld:
             action (int)
 
         Returns:
-            tuple: next_state, reward, done, truncation
+            tuple: next_state, reward, done, truncation #truncation=self.__step_count>self.max_step
         """
         # TODO implement the step function here
+        ##sample code in HW2
+        # self.__step_count += 1
+
+        # state_coord = self.__state_list[self.__current_state]
+        # if self.__is_goal_state(state_coord):
+        #     next_init_state = self.reset()
+        #     return next_init_state, self.__goal_reward, True
+        # if self.__is_trap_state(state_coord):
+        #     next_init_state = self.reset()
+        #     return next_init_state, self.__trap_reward, True
+
+        # next_state_coord = self.__get_next_state(state_coord, action)
+        # next_state = self.__state_list.index(next_state_coord)
+        # self.__current_state = next_state
+
+        # return next_state, self.__step_reward, False
+
+        #we need to implement:
+        # 1. lava
+        # 2. exit
+        # 3. key, door
+        # 4. bait
+        # 5. portal
+        self._step_count += 1
+
+        state_coord = self._state_list[self._current_state]
+        if self._is_goal_state(state_coord):
+            next_init_state = self.reset()
+            return next_init_state, self._goal_reward, True, self.__step_count>self.max_step
+        if self._is_trap_state(state_coord):
+            next_init_state = self.reset()
+            return next_init_state, self._trap_reward, True, self.__step_count>self.max_step
+        
+        # 2. exit
+        if self._is_exit_state(state_coord):
+            next_init_state = self.reset()
+            return next_init_state, self._exit_reward, True, self.__step_count>self.max_step
+
+        next_state_coord = self._get_next_state(state_coord, action)
+        next_state = self._state_list.index(next_state_coord)
+        self._current_state = next_state
+
+        # 3. key, door
+        if self._is_key_state(next_state):# then unlock the key and the door
+            self._key_state = None
+            self._door_state = None
+
+        # 1. lava
+        next_state_coord = self._state_list[self._current_state]
+        if self._is_lava_state(next_state_coord): #then directly end episode
+            #reinitialize curremt state
+            self._current_state = self.reset()
+            return self._current_state, self._step_reward, True, self.__step_count>self.max_step
+        
+        else:
+            return next_state, self._step_reward, False, self.__step_count>self.max_step
+
+
         raise NotImplementedError
 
     def reset(self) -> int:
@@ -447,6 +505,13 @@ class GridWorld:
             int: initial state
         """
         # TODO implement the reset function here
+        ##sample code in HW2
+        # if self.__init_pos_list:
+        #     self.__current_state = self.__init_pos_list[np.random.randint(len(self.__init_pos_list))]
+        # else:
+        #     self.__current_state = np.random.randint(len(self.__state_list))
+        # return self.__current_state
+        ##sample code in HW2
         raise NotImplementedError
 
     #############################
