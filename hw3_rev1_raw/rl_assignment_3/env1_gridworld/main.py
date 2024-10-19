@@ -68,16 +68,29 @@ def test_correctness(filename: str = "tasks/maze.txt") -> None:
     grid_world.set_current_state(state[0])
 
     # Iterate through the ground truth data
+    iter=2
     for _, a, r, d, t, ns in zip(state, action, reward, done, truncated, next_state):
         next_state_prediction, reward_prediction, done_prediction, truncated_prediction = grid_world.step(a)
         
         # Check if the model prediction matches groud truth
         if done_prediction:
             next_state_prediction = grid_world.reset()
+            if not ((next_state_prediction in grid_world._init_states) and reward_prediction == r and done_prediction == d and truncated_prediction == t):
+                print(f"Error done occur at iter={iter}:")
+                print(f"init_list:{grid_world._init_states}")
+                print(f"My next state:{next_state_prediction}")
+                print(f"My pred:{[reward_prediction,done_prediction, truncated_prediction]}")
+                print(f"GT:{[r,d,t]}")
             result.append( (next_state_prediction in grid_world._init_states) and reward_prediction == r and done_prediction == d and truncated_prediction == t)
             grid_world.set_current_state(ns)
         else:
+            if not (next_state_prediction == ns and reward_prediction == r and done_prediction == d and truncated_prediction == t):
+                print(f"Error step occur at iter={iter}:")
+                print(f"My pred:{[next_state_prediction,reward_prediction,done_prediction, truncated_prediction]}")
+                print(f"GT:{[ns,r,d,t]}")
             result.append(next_state_prediction == ns and reward_prediction == r and done_prediction == d and truncated_prediction == t)
+
+        iter+=1
 
     print(f"The correctness of the task {task_name}: {np.round(np.mean(result) * 100, 2)} %")
 

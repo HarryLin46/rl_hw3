@@ -95,11 +95,14 @@ class GridWorld:
         self._step_count = 0
         self._maze = np.array([])
         self._state_list = []
+        # self._valid_state_list = [] #use in reset()
         self._current_state = 0
         self.max_step = max_step
         self.maze_name = maze_file.split('/')[-1].replace(".txt", "").capitalize()
         self._read_maze(maze_file)
         self.render_init(self.maze_name)
+
+        self._is_ported = False #avoid consecutive ported, DISCARDED!
 
         # if min_y is None you can initialize the agent in any state
         # if min_y is not None, you can initialize the agent in the state left to min_y
@@ -123,6 +126,10 @@ class GridWorld:
                 self._door_state = state
             if self._is_key_state(self._state_list[state]):
                 self._key_state = state
+
+        # #create door flag, to create door_is_open Boolean
+        # if self._door_state: #then the maze has the door and is locked
+        #     self.door_is_open=
 
         # the door state and key state should be different and unique
         if self._door_state is None:
@@ -466,37 +473,67 @@ class GridWorld:
         state_coord = self._state_list[self._current_state]
         if self._is_goal_state(state_coord):
             next_init_state = self.reset()
-            return next_init_state, self._goal_reward, True, self.__step_count>self.max_step
+            return next_init_state, self._goal_reward, True, self._step_count>self.max_step
         if self._is_trap_state(state_coord):
             next_init_state = self.reset()
-            return next_init_state, self._trap_reward, True, self.__step_count>self.max_step
+            return next_init_state, self._trap_reward, True, self._step_count>self.max_step
         
         # 2. exit
         if self._is_exit_state(state_coord):
             next_init_state = self.reset()
-            return next_init_state, self._exit_reward, True, self.__step_count>self.max_step
+            return next_init_state, self._exit_reward, True, self._step_count>self.max_step
 
         next_state_coord = self._get_next_state(state_coord, action)
         next_state = self._state_list.index(next_state_coord)
+        
+        #5. portal
+        if self._is_portal_state(state_coord) and next_state==self._current_state: #if you are on portal and you hit the wall
+            if self._current_state==self._portal_state[0]:
+                next_state=self._portal_state[1]
+                next_state_coord = self._state_list[next_state]
+                # self._is_ported = True #DISCARDED
+            elif self._current_state==self._portal_state[1]:
+                next_state=self._portal_state[0]
+                next_state_coord = self._state_list[next_state]
+                # self._is_ported = True #DISCARDED
+            else:
+                print("There's a bug in finding protal state!")
+        
+
         self._current_state = next_state
 
         # 3. key, door
-        if self._is_key_state(next_state):# then unlock the key and the door
-            self._key_state = None
-            self._door_state = None
+        if self._is_key_state(state_coord):# then unlock the key and the door
+            self.open_door()
+            # self._key_state = None
+            # self._door_state = None
+
+        # 4. bait
+        if self._is_bait_state(next_state_coord):# then unlock the bait
+            self.bite()
+            # self._bait_state=None
+            return next_state, self._bait_reward, False, self._step_count>self.max_step    
+
 
         # 1. lava
         next_state_coord = self._state_list[self._current_state]
         if self._is_lava_state(next_state_coord): #then directly end episode
             #reinitialize curremt state
             self._current_state = self.reset()
-            return self._current_state, self._step_reward, True, self.__step_count>self.max_step
+            return self._current_state, self._step_reward, True, self._step_count>self.max_step
         
-        else:
-            return next_state, self._step_reward, False, self.__step_count>self.max_step
+        # 3. key, door
+        if self._is_opened:
+            next_state+=len(self._state_list)
+
+        # 4. bait
+        if self._is_baited:
+            return next_state, self._step_reward+self._bait_step_penalty, False, self._step_count>self.max_step    
+        
+        return next_state, self._step_reward, False, self._step_count>self.max_step
 
 
-        raise NotImplementedError
+        # raise NotImplementedError
 
     def reset(self) -> int:
         """Reset the environment
@@ -512,7 +549,14 @@ class GridWorld:
         #     self.__current_state = np.random.randint(len(self.__state_list))
         # return self.__current_state
         ##sample code in HW2
-        raise NotImplementedError
+
+        #we need to initialize the state left to min_y
+        # self._step_count=0
+        self._current_state = np.random.choice(self._init_states)
+        self.place_bait()
+        self.close_door()
+        return self._current_state
+        # raise NotImplementedError
 
     #############################
     # Visualize the environment #
