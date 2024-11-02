@@ -65,7 +65,7 @@ class My2048Env(gym.Env):
         self.observation_space = spaces.Box(0, 1, (layers, self.w, self.h), dtype=int)
         
         # TODO: Set negative reward (penalty) for illegal moves (optional)
-        self.set_illegal_move_reward(0.)
+        self.set_illegal_move_reward(-8.0)
         
         self.set_max_tile(None)
 
@@ -77,6 +77,15 @@ class My2048Env(gym.Env):
 
         # Reset ready for a game
         self.reset()
+
+        #remember the step_count
+        self.step_count = 0
+
+        #remember previous action
+        self.pre_act = None
+
+        #remember current highest in an episode
+        self.current_highest = 0
 
     def seed(self, seed=None):
         self.np_random, seed = seeding.np_random(seed)
@@ -96,6 +105,41 @@ class My2048Env(gym.Env):
         assert max_tile is None or isinstance(max_tile, int)
         self.max_tile = max_tile
 
+    def is_n_and_half_n_ajacent(self,n): #n=128,256,512,1024
+        # if self.highest()<n:
+        #     return False
+        # else:
+        try:
+            highest_is,highest_js = np.where(self.Matrix==n) #find n's index
+            highest_i = highest_is[0]
+            highest_j = highest_js[0]
+
+            sec_highest_is,sec_highest_js = np.where(self.Matrix==(n/2)) #find n's index
+            sec_highest_i = sec_highest_is[0]
+            sec_highest_j = sec_highest_js[0]
+        except:
+            return False
+
+        if len(highest_is)>=2 and len(sec_highest_is)>=2: #no bonus for second n/2 block
+            return False
+
+        if (highest_i==sec_highest_i and abs(highest_j - sec_highest_j)==1) or (abs(highest_i-sec_highest_i)==1 and highest_j == sec_highest_j):
+            return True
+        else:
+            return False
+        
+    def first_block_n(self,n):#detect block with value n is the first block in self.Matrix
+        try:
+            highest_is,highest_js = np.where(self.Matrix==n) #find n's index
+        except:
+            return False
+        
+        if len(highest_is)==1:
+            return True
+        elif len(highest_is)>1:
+            return False
+            
+
     # Implement gym interface
     def step(self, action):
         """Perform one step of the game. This involves moving and adding a new tile."""
@@ -107,6 +151,8 @@ class My2048Env(gym.Env):
             'highest': 0,
             'score': 0,
         }
+        self.step_count += 1
+        # print(self.step_count, self.Matrix)
         try:
             # assert info['illegal_move'] == False
             pre_state = self.Matrix.copy()
@@ -118,12 +164,105 @@ class My2048Env(gym.Env):
             reward = float(score)
 
             # TODO: Add reward according to weighted states (optional)
+            # weight = np.array([
+            #         [4.0  , 2.0  , 1.75  , 0.1  ],
+            #         [3.75  , 2.25  , 1.5  , 0.25  ],
+            #         [3.5  , 2.5  , 1.25  , 0.5  ],
+            #         [3.0  , 2.75  , 1.0  , 0.75  ]])
+            # weight = np.array([
+            #         [8.0  , 2.0  , 2.0  , 0.25  ],
+            #         [8.0  , 2.0  , 1.0  , 0.5  ],
+            #         [8.0  , 4.0  , 1.0  , 0.5  ],
+            #         [4.0  , 4.0  , 1.0  , 0.5  ]])
             weight = np.array([
-                    [0  , 0  , 0  , 0  ],
-                    [0  , 0  , 0  , 0  ],
-                    [0  , 0  , 0  , 0  ],
-                    [0  , 0  , 0  , 0  ]])
-            reward += 0
+                    [16.0  , 1.0  , 1.0  , -8.0  ],
+                    [8.0  , 1.0  , -1.0  , -8.0  ],
+                    [8.0  , 4.0  , -1.0  , -4.0  ],
+                    [4.0  , 4.0  , -2.0  , -4.0  ]])
+            # reward += 0
+            state_bonus = self.Matrix * weight #put the block as a snake from big to small help find the best solution
+            # print(f"self.highest:{self.highest()}, state_bonus:",np.sum(state_bonus) * 0.004 )
+            # if self.highest()>=512:
+            #     if self.highest()>=1024:
+            #         print("1024 merged!!!", np.sum(state_bonus) * 0.0009) #0.0025, when create 256, bonus=11
+            #     else:
+            #         print(np.sum(state_bonus) * 0.0009)
+            if self.highest()>=1024:
+                print("1024 merged!!!", np.sum(state_bonus) * 0.0009) #0.0025, when create 256, bonus=11
+            reward += np.sum(state_bonus) * 0.0009 
+
+            #reward for putting the biggest block at the corner
+            # if self.Matrix[0,0]==self.highest() and self.highest()>=256:
+            # #    reward += np.sum(state_bonus) * 0.05 
+            #     reward += np.log2(self.highest())*0.05
+
+            #we expect the block order above, penalty for using action : right, down, if >256 block is merged, keep it at the corner
+            if action==3 and self.highest()>=512: #severly avoid use right
+                reward-=3.0
+                if self.highest()>=512:
+                    reward-=2.0
+            # elif action==1 and self.highest()>=256: #slightly avoid use down
+            #     reward-=0.5
+            #     if self.highest()>=512:
+            #         reward-=0.5
+
+
+            #Bonus for create consecutive blocks with the same number
+            #we only consider the biggest block
+            # highest_i,highest_j = np.where(self.Matrix==self.highest())
+            # highest_i = highest_i[0]
+            # highest_j = highest_j[0]
+            # if self.Matrix[highest_i,highest_j]==self.Matrix[min(highest_i+1,3),highest_j]:
+            #     reward += np.log2(self.highest()) * 0.2
+            # elif self.Matrix[highest_i,highest_j]==self.Matrix[highest_i,min(highest_j+1,3)]:
+            #     reward += np.log2(self.highest()) * 0.2
+            # elif self.Matrix[highest_i,highest_j]==self.Matrix[max(highest_i-1,0),highest_j]:
+            #     reward += np.log2(self.highest()) * 0.2
+            # elif self.Matrix[highest_i,highest_j]==self.Matrix[highest_i,max(highest_j-1,0)]:
+            #     reward += np.log2(self.highest()) * 0.2
+            
+
+            #Bonus for create consecutive blocks with 1024,512,256,128,64,32,16,8,4,2
+            #we first create a list save the result of the matrix
+            # block_list = [] # = [(0,0),(1,0),(2,0),(3,0),(3,1),...] of self.Matrix
+            # block_list.extend(self.Matrix[:, 0])
+            # block_list.extend(self.Matrix[::-1, 1])
+            # block_list.extend(self.Matrix[:, 2])
+            # block_list.extend(self.Matrix[::-1, 3])
+
+
+            #we only detect the sequence starting from the biggest block
+            # seq_begin = block_list.index(self.highest())
+            # seq_length=0
+            # while True:
+            #     if seq_begin+seq_length+1 > len(block_list)-1:
+            #         break
+            #     if block_list[seq_begin+seq_length+1]==block_list[seq_begin+seq_length]/2:
+            #         reward += np.log2(block_list[seq_begin+seq_length]) * 0.5
+            #         seq_length += 1
+            #     else:
+            #         break
+            
+
+
+            # #Bonus for create 256
+            # if self.highest()>=256:
+            #     reward+=3.0
+
+            # #Bonus for create 512
+            # if self.highest()>=512:
+            #     reward+=8.0
+
+            # #Bonus for create 1024
+            # if self.highest()>=1024:
+            #     reward+=10.0
+
+            # if self.highest()>=2048:
+            #     reward+=1000.0
+            #     self.step_count = 0
+            #     done=True
+
+            self.pre_act = action
             
         except IllegalMove:
             logging.debug("Illegal move")
@@ -131,11 +270,27 @@ class My2048Env(gym.Env):
             reward = self.illegal_move_reward
 
             # TODO: Modify this part for the agent to have a chance to explore other actions (optional)
-            done = True
+            if np.all(self.Matrix!=0): #then you successfully fill up the board, which should be rewarded
+                if self.highest()>=512:
+                    print(f"full done!, after create {self.highest()}")
+                reward += 1.0
+                self.step_count = 0
+                done = True
+            elif self.foul_count > 30:# and self.foul_count>self.step_count: 16
+                if self.highest()>=512:
+                    print(f"Too many illegal move!, after create {self.highest()}")
+                reward -= 5.0
+                self.step_count = 0
+                done = True
+            else:
+                self.foul_count+=1
 
         truncate = False
         info['highest'] = self.highest()
         info['score']   = self.score
+
+        if self.highest()>=512:
+            self.set_illegal_move_reward(-8.0)
 
         # Return observation (board state), reward, done, truncate and info dict
         return stack(self.Matrix), reward, done, truncate, info
@@ -145,6 +300,8 @@ class My2048Env(gym.Env):
         self.Matrix = np.zeros((self.h, self.w), int)
         self.score = 0
         self.foul_count = 0
+
+        # self.step_count = 0
 
         logging.debug("Adding tiles")
         self.add_tile()
@@ -220,7 +377,65 @@ class My2048Env(gym.Env):
             for y in range(self.h):
                 old = [self.get(x, y) for x in rx]
                 (new, ms) = self.shift(old, shift_direction)
-                move_score += ms
+                # move_score += ms
+                if not ms==0:
+                    #bonus for create big block
+                    if self.highest()==256:
+                        if ms>=128:
+                            if self.is_n_and_half_n_ajacent(256):
+                                # print("merge 128 next to 256!")
+                                # print(self.Matrix)
+                                # print("--------------------------------------")
+                                move_score += (np.log2(ms)+3.0)*1.1
+                            else:
+                                move_score += (np.log2(ms)+3.0)
+                        elif ms>=64:
+                            if self.is_n_and_half_n_ajacent(256) and self.is_n_and_half_n_ajacent(128):
+                                move_score += (np.log2(ms)+3.0)*1.2
+                            else:
+                                move_score += (np.log2(ms)+3.0)
+                        else:
+                            move_score += (np.log2(ms)+3.0)
+                    elif self.highest()==512:
+                        if ms>=256:
+                            if self.is_n_and_half_n_ajacent(512):
+                                print("merge 256 next to 512!")
+                                print(self.Matrix)
+                                print("--------------------------------------")
+                                move_score += (np.log2(ms)+6.0)*1.2
+                            else:
+                                move_score += (np.log2(ms)+6.0)
+                        elif ms>=128:
+                            if self.is_n_and_half_n_ajacent(512) and self.is_n_and_half_n_ajacent(256) :
+                                print("merge 128 next to 256, and 256 next to 512!")
+                                print(self.Matrix)
+                                print("--------------------------------------")
+                                move_score += (np.log2(ms)+6.0)*1.4
+                            else:
+                                move_score += (np.log2(ms)+6.0)
+                        else:
+                            move_score += (np.log2(ms)+6.0)
+                    elif self.highest()==1024:
+                        if ms>=512:
+                            if self.is_n_and_half_n_ajacent(1024):
+                                print("merge 512 next to 1024!")
+                                print(self.Matrix)
+                                print("--------------------------------------")
+                                move_score += (np.log2(ms)+10.0)*1.5
+                            else:
+                                move_score += (np.log2(ms)+10.0)
+                        elif ms>=256:
+                            if self.is_n_and_half_n_ajacent(1024) and self.is_n_and_half_n_ajacent(512):
+                                    print("merge 256 next to 512, and 512 next to 1024!")
+                                    print(self.Matrix)
+                                    print("--------------------------------------")
+                                    move_score += (np.log2(ms)+10.0)*1.8
+                            else:
+                                move_score += (np.log2(ms)+10.0)                            
+                        else:
+                            move_score += (np.log2(ms)+10.0)
+                    else:
+                        move_score += np.log2(ms)
                 if old != new:
                     changed = True
                     if not trial:
@@ -231,7 +446,65 @@ class My2048Env(gym.Env):
             for x in range(self.w):
                 old = [self.get(x, y) for y in ry]
                 (new, ms) = self.shift(old, shift_direction)
-                move_score += ms
+                # move_score += ms
+                if not ms==0:
+                    #bonus for create big block
+                    if self.highest()==256:
+                        if ms>=128:
+                            if self.is_n_and_half_n_ajacent(256):
+                                # print("merge 128 next to 256!")
+                                # print(self.Matrix)
+                                # print("--------------------------------------")
+                                move_score += (np.log2(ms)+3.0)*1.1
+                            else:
+                                move_score += (np.log2(ms)+3.0)
+                        elif ms>=64:
+                            if self.is_n_and_half_n_ajacent(256) and self.is_n_and_half_n_ajacent(128):
+                                move_score += (np.log2(ms)+3.0)*1.2
+                            else:
+                                move_score += (np.log2(ms)+3.0)
+                        else:
+                            move_score += (np.log2(ms)+3.0)
+                    elif self.highest()==512:
+                        if ms>=256:
+                            if self.is_n_and_half_n_ajacent(512):
+                                print("merge 256 next to 512!")
+                                print(self.Matrix)
+                                print("--------------------------------------")
+                                move_score += (np.log2(ms)+6.0)*1.2
+                            else:
+                                move_score += (np.log2(ms)+6.0)
+                        elif ms>=128:
+                            if self.is_n_and_half_n_ajacent(512) and self.is_n_and_half_n_ajacent(256) :
+                                print("merge 128 next to 256, and 256 next to 512!")
+                                print(self.Matrix)
+                                print("--------------------------------------")
+                                move_score += (np.log2(ms)+6.0)*1.4
+                            else:
+                                move_score += (np.log2(ms)+6.0)
+                        else:
+                            move_score += (np.log2(ms)+6.0)
+                    elif self.highest()==1024:
+                        if ms>=512:
+                            if self.is_n_and_half_n_ajacent(1024):
+                                print("merge 512 next to 1024!")
+                                print(self.Matrix)
+                                print("--------------------------------------")
+                                move_score += (np.log2(ms)+10.0)*1.5
+                            else:
+                                move_score += (np.log2(ms)+10.0)
+                        elif ms>=256:
+                            if self.is_n_and_half_n_ajacent(1024) and self.is_n_and_half_n_ajacent(512):
+                                    print("merge 256 next to 512, and 512 next to 1024!")
+                                    print(self.Matrix)
+                                    print("--------------------------------------")
+                                    move_score += (np.log2(ms)+10.0)*1.8
+                            else:
+                                move_score += (np.log2(ms)+10.0)                            
+                        else:
+                            move_score += (np.log2(ms)+10.0)
+                    else:
+                        move_score += np.log2(ms)
                 if old != new:
                     changed = True
                     if not trial:
@@ -239,7 +512,25 @@ class My2048Env(gym.Env):
                             self.set(x, y, new[y])
         if changed != True:
             raise IllegalMove
+        
+        if self.current_highest<self.highest() and self.Matrix[0,0]==self.highest() and self.highest()>=256:
+            if self.highest()==256:
+                move_score += 3.0
+            elif self.highest()==512:
+                move_score+=6.0
+            elif self.highest()>=1024:
+                move_score+=10.0
 
+            if self.highest()>=1024:
+                print("merge big block at the corner!!")
+                print(self.Matrix)
+                print("--------------------------------------")
+
+            self.currt_highest=self.highest()
+        else:
+            self.currt_highest=self.highest()
+
+        # move_score = np.log2(move_score)
         return move_score
 
     def combine(self, shifted_row):

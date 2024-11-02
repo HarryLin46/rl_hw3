@@ -1,0 +1,41 @@
+_wandb:
+    value:
+        cli_version: 0.18.3
+        m: []
+        python_version: 3.11.10
+        t:
+            "1":
+                - 1
+                - 55
+            "2":
+                - 1
+                - 55
+            "3":
+                - 14
+                - 16
+                - 23
+                - 35
+                - 55
+            "4": 3.11.10
+            "5": 0.18.3
+            "8":
+                - 3
+                - 5
+            "12": 0.18.3
+            "13": windows-amd64
+algorithm:
+    value: stable_baselines3.dqn.dqn.DQN
+epoch_num:
+    value: 1000
+eval_episode_num:
+    value: 10
+learning_rate:
+    value: 0.0001
+policy_network:
+    value: CnnPolicy
+run_id:
+    value: DQN_DonkeyKong
+save_path:
+    value: ./trained_models/donkey_kong_model
+timesteps_per_epoch:
+    value: 5000

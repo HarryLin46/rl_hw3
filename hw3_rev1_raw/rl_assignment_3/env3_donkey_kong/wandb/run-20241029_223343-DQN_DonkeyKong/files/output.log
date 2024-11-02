@@ -1,0 +1,22 @@
+Running on cuda
+Traceback (most recent call last):
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\multiprocessing\connection.py", line 328, in _recv_bytes
+    nread, err = ov.GetOverlappedResult(True)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+BrokenPipeError: [WinError 109] 管道已結束。
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\harry\OneDrive\Desktop\cloud backup\RL\HW\HW3\rl_hw3\hw3_rev1_raw\rl_assignment_3\env3_donkey_kong\train_donkey.py", line 96, in <module>
+    train_env = SubprocVecEnv([make_env for _ in range(num_train_envs)])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\common\vec_env\subproc_vec_env.py", line 119, in __init__
+    observation_space, action_space = self.remotes[0].recv()
+                                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\multiprocessing\connection.py", line 250, in recv
+    buf = self._recv_bytes()
+          ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\multiprocessing\connection.py", line 337, in _recv_bytes
+    raise EOFError
+EOFError

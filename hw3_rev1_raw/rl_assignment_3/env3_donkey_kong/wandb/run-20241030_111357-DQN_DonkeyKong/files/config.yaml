@@ -1,0 +1,305 @@
+_current_progress_remaining:
+    value: 1
+_custom_logger:
+    value: "False"
+_episode_num:
+    value: 0
+_episode_storage:
+    value: None
+_last_episode_starts:
+    value: '[ True  True  True  True]'
+_last_obs:
+    value: |-
+        [[[[0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           ...
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]]]
+
+
+         [[[0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           ...
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]]]
+
+
+         [[[0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           ...
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]]]
+
+
+         [[[0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           ...
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]
+           [0 0 0 ... 0 0 0]]]]
+_last_original_obs:
+    value: None
+_logger:
+    value: <stable_baselines3.common.logger.Logger object at 0x000001D5B5FAD490>
+_n_calls:
+    value: 0
+_n_updates:
+    value: 0
+_num_timesteps_at_start:
+    value: 0
+_stats_window_size:
+    value: 100
+_total_timesteps:
+    value: 5000
+_vec_normalize_env:
+    value: None
+_wandb:
+    value:
+        cli_version: 0.18.3
+        m: []
+        python_version: 3.11.10
+        t:
+            "1":
+                - 1
+                - 55
+            "2":
+                - 1
+                - 55
+            "3":
+                - 1
+                - 14
+                - 16
+                - 22
+                - 23
+                - 35
+                - 55
+            "4": 3.11.10
+            "5": 0.18.3
+            "8":
+                - 3
+                - 5
+            "12": 0.18.3
+            "13": windows-amd64
+action_noise:
+    value: None
+action_space:
+    value: Discrete(18)
+algo:
+    value: DQN
+algorithm:
+    value: stable_baselines3.dqn.dqn.DQN
+batch_norm_stats:
+    value: '[]'
+batch_norm_stats_target:
+    value: '[]'
+batch_size:
+    value: 32
+buffer_size:
+    value: 100000
+device:
+    value: cuda
+env:
+    value: <stable_baselines3.common.vec_env.vec_transpose.VecTransposeImage object at 0x000001D5838A0310>
+ep_info_buffer:
+    value: deque([], maxlen=100)
+ep_success_buffer:
+    value: deque([], maxlen=100)
+epoch_num:
+    value: 1000
+eval_episode_num:
+    value: 10
+exploration_final_eps:
+    value: 0.01
+exploration_fraction:
+    value: 0.1
+exploration_initial_eps:
+    value: 1
+exploration_rate:
+    value: 0
+exploration_schedule:
+    value: <function get_linear_fn.<locals>.func at 0x000001D5B83918A0>
+gamma:
+    value: 0.99
+gradient_steps:
+    value: 1
+learning_rate:
+    value: 0.0001
+learning_starts:
+    value: 10000
+lr_schedule:
+    value: <function get_schedule_fn.<locals>.<lambda> at 0x000001D58391C360>
+max_grad_norm:
+    value: 10
+n_envs:
+    value: 4
+num_timesteps:
+    value: 0
+observation_space:
+    value: Box(0, 255, (1, 84, 84), uint8)
+optimize_memory_usage:
+    value: "False"
+policy:
+    value: |-
+        CnnPolicy(
+          (q_net): QNetwork(
+            (features_extractor): DonkeyKongCNN(
+              (cnn): Sequential(
+                (0): Conv2d(1, 32, kernel_size=(8, 8), stride=(4, 4))
+                (1): ReLU()
+                (2): Conv2d(32, 64, kernel_size=(4, 4), stride=(2, 2))
+                (3): ReLU()
+                (4): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1))
+                (5): ReLU()
+                (6): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1))
+                (7): ReLU()
+                (8): Flatten(start_dim=1, end_dim=-1)
+              )
+              (linear): Sequential(
+                (0): Linear(in_features=800, out_features=512, bias=True)
+                (1): ReLU()
+                (2): Linear(in_features=512, out_features=512, bias=True)
+                (3): ReLU()
+              )
+            )
+            (q_net): Sequential(
+              (0): Linear(in_features=512, out_features=64, bias=True)
+              (1): ReLU()
+              (2): Linear(in_features=64, out_features=64, bias=True)
+              (3): ReLU()
+              (4): Linear(in_features=64, out_features=18, bias=True)
+            )
+          )
+          (q_net_target): QNetwork(
+            (features_extractor): DonkeyKongCNN(
+              (cnn): Sequential(
+                (0): Conv2d(1, 32, kernel_size=(8, 8), stride=(4, 4))
+                (1): ReLU()
+                (2): Conv2d(32, 64, kernel_size=(4, 4), stride=(2, 2))
+                (3): ReLU()
+                (4): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1))
+                (5): ReLU()
+                (6): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1))
+                (7): ReLU()
+                (8): Flatten(start_dim=1, end_dim=-1)
+              )
+              (linear): Sequential(
+                (0): Linear(in_features=800, out_features=512, bias=True)
+                (1): ReLU()
+                (2): Linear(in_features=512, out_features=512, bias=True)
+                (3): ReLU()
+              )
+            )
+            (q_net): Sequential(
+              (0): Linear(in_features=512, out_features=64, bias=True)
+              (1): ReLU()
+              (2): Linear(in_features=64, out_features=64, bias=True)
+              (3): ReLU()
+              (4): Linear(in_features=64, out_features=18, bias=True)
+            )
+          )
+        )
+policy_class:
+    value: <class 'stable_baselines3.dqn.policies.CnnPolicy'>
+policy_kwargs:
+    value: '{''features_extractor_class'': <class ''my_donkey_model.DonkeyKongCNN''>, ''features_extractor_kwargs'': {''features_dim'': 512}}'
+policy_network:
+    value: CnnPolicy
+q_net:
+    value: |-
+        QNetwork(
+          (features_extractor): DonkeyKongCNN(
+            (cnn): Sequential(
+              (0): Conv2d(1, 32, kernel_size=(8, 8), stride=(4, 4))
+              (1): ReLU()
+              (2): Conv2d(32, 64, kernel_size=(4, 4), stride=(2, 2))
+              (3): ReLU()
+              (4): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1))
+              (5): ReLU()
+              (6): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1))
+              (7): ReLU()
+              (8): Flatten(start_dim=1, end_dim=-1)
+            )
+            (linear): Sequential(
+              (0): Linear(in_features=800, out_features=512, bias=True)
+              (1): ReLU()
+              (2): Linear(in_features=512, out_features=512, bias=True)
+              (3): ReLU()
+            )
+          )
+          (q_net): Sequential(
+            (0): Linear(in_features=512, out_features=64, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=64, out_features=64, bias=True)
+            (3): ReLU()
+            (4): Linear(in_features=64, out_features=18, bias=True)
+          )
+        )
+q_net_target:
+    value: |-
+        QNetwork(
+          (features_extractor): DonkeyKongCNN(
+            (cnn): Sequential(
+              (0): Conv2d(1, 32, kernel_size=(8, 8), stride=(4, 4))
+              (1): ReLU()
+              (2): Conv2d(32, 64, kernel_size=(4, 4), stride=(2, 2))
+              (3): ReLU()
+              (4): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1))
+              (5): ReLU()
+              (6): Conv2d(64, 32, kernel_size=(3, 3), stride=(1, 1))
+              (7): ReLU()
+              (8): Flatten(start_dim=1, end_dim=-1)
+            )
+            (linear): Sequential(
+              (0): Linear(in_features=800, out_features=512, bias=True)
+              (1): ReLU()
+              (2): Linear(in_features=512, out_features=512, bias=True)
+              (3): ReLU()
+            )
+          )
+          (q_net): Sequential(
+            (0): Linear(in_features=512, out_features=64, bias=True)
+            (1): ReLU()
+            (2): Linear(in_features=64, out_features=64, bias=True)
+            (3): ReLU()
+            (4): Linear(in_features=64, out_features=18, bias=True)
+          )
+        )
+replay_buffer:
+    value: <stable_baselines3.common.buffers.ReplayBuffer object at 0x000001D5816BC150>
+replay_buffer_class:
+    value: <class 'stable_baselines3.common.buffers.ReplayBuffer'>
+replay_buffer_kwargs:
+    value: '{}'
+run_id:
+    value: DQN_DonkeyKong
+save_path:
+    value: ./trained_models/donkey_kong_model
+sde_sample_freq:
+    value: -1
+seed:
+    value: None
+start_time:
+    value: 1730258043192720600
+target_update_interval:
+    value: 1000
+tau:
+    value: 1
+tensorboard_log:
+    value: DQN_DonkeyKong
+timesteps_per_epoch:
+    value: 5000
+train_freq:
+    value: 4
+use_sde:
+    value: "False"
+use_sde_at_warmup:
+    value: "False"
+verbose:
+    value: 0

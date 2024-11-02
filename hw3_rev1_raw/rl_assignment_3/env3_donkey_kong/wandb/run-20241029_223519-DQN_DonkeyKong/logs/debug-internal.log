@@ -1,0 +1,18 @@
+{"time":"2024-10-29T22:35:19.1676552+08:00","level":"INFO","msg":"using version","core version":"0.18.3"}
+{"time":"2024-10-29T22:35:19.1676552+08:00","level":"INFO","msg":"created symlink","path":"C:\\Users\\harry\\OneDrive\\Desktop\\cloud backup\\RL\\HW\\HW3\\rl_hw3\\hw3_rev1_raw\\rl_assignment_3\\env3_donkey_kong\\wandb\\run-20241029_223519-DQN_DonkeyKong\\logs\\debug-core.log"}
+{"time":"2024-10-29T22:35:19.1844575+08:00","level":"ERROR","msg":"dialing: google: could not find default credentials. See https://cloud.google.com/docs/authentication/external/set-up-adc for more information"}
+{"time":"2024-10-29T22:35:19.212033+08:00","level":"INFO","msg":"created new stream","id":"DQN_DonkeyKong"}
+{"time":"2024-10-29T22:35:19.2121608+08:00","level":"INFO","msg":"stream: started","id":"DQN_DonkeyKong"}
+{"time":"2024-10-29T22:35:19.2122244+08:00","level":"INFO","msg":"handler: started","stream_id":{"value":"DQN_DonkeyKong"}}
+{"time":"2024-10-29T22:35:19.2122244+08:00","level":"INFO","msg":"writer: Do: started","stream_id":{"value":"DQN_DonkeyKong"}}
+{"time":"2024-10-29T22:35:19.2122244+08:00","level":"INFO","msg":"sender: started","stream_id":{"value":"DQN_DonkeyKong"}}
+{"time":"2024-10-29T22:35:19.5136192+08:00","level":"INFO","msg":"wandb-core","!BADKEY":null}
+{"time":"2024-10-29T22:35:19.5148367+08:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-10-29T22:35:23.431155+08:00","level":"INFO","msg":"stream: closing","id":"DQN_DonkeyKong"}
+{"time":"2024-10-29T22:35:23.431155+08:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-10-29T22:35:23.4381199+08:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-10-29T22:35:26.3736674+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-10-29T22:35:26.6652799+08:00","level":"INFO","msg":"handler: closed","stream_id":{"value":"DQN_DonkeyKong"}}
+{"time":"2024-10-29T22:35:26.6652799+08:00","level":"INFO","msg":"writer: Close: closed","stream_id":{"value":"DQN_DonkeyKong"}}
+{"time":"2024-10-29T22:35:26.6652799+08:00","level":"INFO","msg":"sender: closed","stream_id":{"value":"DQN_DonkeyKong"}}
+{"time":"2024-10-29T22:35:26.6663062+08:00","level":"INFO","msg":"stream: closed","id":"DQN_DonkeyKong"}

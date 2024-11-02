@@ -1,0 +1,70 @@
+Running on cuda
+Epoch: 0, Mean reward: 0.00 +/- 0.00
+At epoch:0, Saving Model with mean reward:0.00
+Traceback (most recent call last):
+  File "C:\Users\harry\OneDrive\Desktop\cloud backup\RL\HW\HW3\rl_hw3\hw3_rev1_raw\rl_assignment_3\env3_donkey_kong\train_donkey.py", line 143, in <module>
+    train(eval_env, model, my_config)
+  File "C:\Users\harry\OneDrive\Desktop\cloud backup\RL\HW\HW3\rl_hw3\hw3_rev1_raw\rl_assignment_3\env3_donkey_kong\train_donkey.py", line 65, in train
+    mean_reward, std_reward = eval(eval_env, model, config["eval_episode_num"])
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\OneDrive\Desktop\cloud backup\RL\HW\HW3\rl_hw3\hw3_rev1_raw\rl_assignment_3\env3_donkey_kong\train_donkey.py", line 46, in eval
+    mean_reward, std_reward = evaluate_policy(model, env, n_eval_episodes=eval_episode_num)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\common\evaluation.py", line 88, in evaluate_policy
+    actions, states = model.predict(
+                      ^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\dqn\dqn.py", line 255, in predict
+    action, state = self.policy.predict(observation, state, episode_start, deterministic)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\common\policies.py", line 368, in predict
+    actions = self._predict(obs_tensor, deterministic=deterministic)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\dqn\policies.py", line 184, in _predict
+    return self.q_net._predict(obs, deterministic=deterministic)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\dqn\policies.py", line 69, in _predict
+    q_values = self(observation)
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\dqn\policies.py", line 66, in forward
+    return self.q_net(self.extract_features(obs, self.features_extractor))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\stable_baselines3\common\policies.py", line 131, in extract_features
+    return features_extractor(preprocessed_obs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\OneDrive\Desktop\cloud backup\RL\HW\HW3\rl_hw3\hw3_rev1_raw\rl_assignment_3\env3_donkey_kong\my_donkey_model.py", line 35, in forward
+    return self.linear(self.cnn(observations))
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\container.py", line 250, in forward
+    input = module(input)
+            ^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1736, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\module.py", line 1747, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\conv.py", line 554, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\harry\anaconda3\envs\rl_hw3\Lib\site-packages\torch\nn\modules\conv.py", line 549, in _conv_forward
+    return F.conv2d(
+           ^^^^^^^^^
+KeyboardInterrupt
